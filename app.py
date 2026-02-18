@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, render_template
 from ultralytics import YOLO
 import cv2
 import numpy as np
@@ -6,6 +6,10 @@ import numpy as np
 app = Flask(__name__)
 
 model = YOLO("model.pt")
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -33,9 +37,9 @@ def predict():
         if label.split(":")[0].strip().lower() == "criminal":
             rectangle_color = (0, 0, 255)
 
-        cv2.rectangle(img, (x1, y1), (x2, y2), rectangle_color, 2)
+        cv2.rectangle(img, (x1, y1), (x2, y2), rectangle_color, 1)
 
-        font_scale = 0.4
+        font_scale = 0.30
         font_thickness = 1
         (label_width, label_height), baseline = cv2.getTextSize(
             label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness
